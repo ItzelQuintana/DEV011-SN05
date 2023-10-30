@@ -17,6 +17,8 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
+
+
   "rules": {
     "linebreak-style": 0,
     "prefer-destructuring": 0,
@@ -29,4 +31,5 @@
     "jest/prefer-to-have-length": "warn",
     "jest/valid-expect": "error"
   }
+  
 }

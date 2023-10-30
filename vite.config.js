@@ -6,8 +6,15 @@ import { defineConfig } from 'vite';
 // https://vitejs.dev/config/shared-options.html#root
 
 export default defineConfig(({ command }) => {
+  const commonConfig = {
+    server: {
+      cors: true,
+    },
+  };
+
   if (command === 'build') {
     return {
+      ...commonConfig,
       root: 'src',
       // para hacer un deploy en github pages, configura propiedad base con el
       // nombre/url de tu repo
