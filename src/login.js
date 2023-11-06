@@ -1,6 +1,6 @@
 import { login, GoogleRegister } from './firebase.js';
 
-export function renderLogin(navigateTo) {
+function renderLogin(navigateTo) {
   const mainPage = document.createElement('div');
   mainPage.setAttribute('class', 'homepage1');
 
@@ -83,7 +83,7 @@ export function renderLogin(navigateTo) {
   textButton.textContent = 'Iniciar sesión con Google';
 
   buttonGoogle.addEventListener('click', () => {
-    GoogleRegister();
+    GoogleRegister(navigateTo);
   });
 
   // boton volver
@@ -113,3 +113,4 @@ export function renderLogin(navigateTo) {
 
   return mainPage;
 }
+export default renderLogin;

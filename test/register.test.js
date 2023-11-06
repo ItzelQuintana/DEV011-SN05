@@ -3,6 +3,7 @@
  */
 
 import renderCreateAccount from '../src/register.js';
+import * as firebase from '../src/firebase.js';
 
 describe('renderCreateAccount', () => {
   it('Should be a function', () => {
@@ -32,5 +33,31 @@ describe('renderCreateAccount', () => {
     const DOM = document.createElement('div');
     DOM.append(renderCreateAccount());
     expect(DOM).toMatchSnapshot();
+  });
+});
+
+describe('Button register', () => {
+  it('test of click button register', () => {
+    const DOM = document.createElement('div');
+    document.body.appendChild(DOM);
+    DOM.append(renderCreateAccount());
+    jest.spyOn(firebase, 'createUser').mockImplementation(() =>
+    // eslint-disable-next-line
+      Promise.resolve({
+        message: 'success',
+        email: 'giselle@lopez.com',
+      }));
+
+    // jest.spyOn(auth, 'login').mockImplementation(() => Promise.resolve({
+    // message: 'success', email: 'giselle@holaLopez.com' }))
+    const buttonRegister = DOM.querySelector('#continue');
+    const email = DOM.querySelector('#emailRegister');
+    email.value = 'giselle@holaLopez.com';
+    const password = DOM.querySelector('#passwordRegister');
+    password.value = 'hola123';
+    // await Promise.resolve();
+    buttonRegister.click();
+    expect(firebase.createUser).toHaveBeenCalledTimes(1);
+    // loginSpy.mockRestore();
   });
 });

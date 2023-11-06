@@ -2,8 +2,9 @@
  * @jest-environment jsdom
  */
 
-import { renderLogin } from '../src/login.js';
-import { login } from '../src/firebase.js';
+// import { async } from 'regenerator-runtime';
+import renderLogin from '../src/login.js';
+import * as firebase from '../src/firebase.js';
 
 describe('renderLogin', () => {
   it('Should be a function', () => {
@@ -36,9 +37,35 @@ describe('renderLogin', () => {
   });
 });
 
-describe('Button Iniciar Sesion', () => {
-  it('Test of login function', async () => {
-    const result = await login('holahola@holahola.com', 'holaholahola');
-    expect(result).toEqual({ message: 'success', email: 'holahola@holahola.com' });
+// describe('Button Iniciar Sesion', () => {
+//   it('Test of login function', async () => {
+//     const result = await login('holahola@holahola.com', 'holaholahola');
+//     expect(result).toEqual({ message: 'success', email: 'holahola@holahola.com' });
+//   });
+// });
+
+describe('Button iniciar sesion', () => {
+  test('test of click button login', () => {
+    const DOM = document.createElement('div');
+    document.body.appendChild(DOM);
+    DOM.append(renderLogin());
+    jest.spyOn(firebase, 'login').mockImplementation(() =>
+    // eslint-disable-next-line
+      Promise.resolve({
+        message: 'success',
+        email: 'holahola@holahola.com',
+      }));
+
+    // jest.spyOn(auth, 'login').mockImplementation(() => Promise.resolve({
+    // message: 'success', email: 'giselle@holaLopez.com' }))
+    const loginEmail = DOM.querySelector('#emailLog');
+    loginEmail.value = 'holahola@holahola.com';
+    const loginPassword = DOM.querySelector('#passwordLogin');
+    loginPassword.value = 'holaholahola';
+    const buttonLogin = DOM.querySelector('#sessionBtn');
+    buttonLogin.click();
+    // await Promise.resolve();
+    expect(firebase.login).toHaveBeenCalledTimes(1);
+    // loginSpy.mockRestore();
   });
 });

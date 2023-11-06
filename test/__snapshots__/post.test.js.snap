@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`posts Snapshot of posts 1`] = `
+<div>
+  <div
+    class="homepage"
+    id="homepagePostes"
+  >
+    <div
+      class="headerPost"
+    >
+      Mi Plantapp
+      <img
+        class="logoImage"
+        src="/img/planta-arana.png"
+      />
+      <button
+        class="logOutButton"
+      >
+        <img
+          src="/img/salir.png"
+        />
+      </button>
+    </div>
+    <div
+      class="containerPubication"
+    >
+      <img
+        class="imagePublication"
+        src="/img/mujer.png"
+      />
+      <form
+        id="task-form"
+      >
+        <input
+          class="postTitle"
+          placeholder="Título de la publicación."
+          type="text"
+        />
+        <textarea
+          id="postText"
+          placeholder="Ingresa el contenido de la publicación."
+        />
+        <button
+          class="buttonSave"
+        >
+          Publicar
+        </button>
+      </form>
+    </div>
+    <div
+      class="postView"
+    />
+  </div>
+</div>
+`;

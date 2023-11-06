@@ -1,5 +1,4 @@
-import { collection, getDocs, onSnapshot } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
+import { collection, getDocs } from 'firebase/firestore';
 import {
   auth,
   firestore,
@@ -8,26 +7,28 @@ import {
   deletePost,
   editPost,
   logOut,
+  initializeAuth,
 } from './firebase.js';
 
 export function posts(navigateTo) {
-  const homepage = document.querySelector('.homepage');
-  const body1 = document.querySelector('body');
-  const backgroundLayer = document.createElement('div');
-  backgroundLayer.classList.add('background-layer');
-  homepage.style.boxShadow = '0px 0px 0px transparent';
-  homepage.style.height = '100%';
-  homepage.style.width = '100%';
-  homepage.style.paddingTop = '0em';
-  backgroundLayer.style.background = "url('/img/patron2.avif')";
-  backgroundLayer.style.opacity = 0.1;
-  backgroundLayer.style.zIndex = '-1';
-  backgroundLayer.style.top = '0';
-  backgroundLayer.style.left = '0';
-  backgroundLayer.style.width = '100%';
-  backgroundLayer.style.height = '100%';
+  // const body1 = document.querySelector('body');
+  // const backgroundLayer = document.createElement('div');
+  // backgroundLayer.classList.add('background-layer');
+  // homepage.style.boxShadow = '0px 0px 0px transparent';
+  // homepage.style.height = '100%';
+  // homepage.style.width = '100%';
+  // homepage.style.paddingTop = '0em';
+  // backgroundLayer.style.background = "url('/img/patron2.avif')";
+  // backgroundLayer.style.opacity = 0.1;
+  // backgroundLayer.style.zIndex = '-1';
+  // backgroundLayer.style.top = '0';
+  // backgroundLayer.style.left = '0';
+  // backgroundLayer.style.width = '100%';
+  // backgroundLayer.style.height = '100%';
+
   const mainPage = document.createElement('div');
-  mainPage.setAttribute('class', 'homepagePosts');
+  mainPage.setAttribute('class', 'homepage');
+  mainPage.setAttribute('id', 'homepagePostes');
   const headerPost = document.createElement('div');
   headerPost.textContent = 'Mi Plantapp';
   headerPost.setAttribute('class', 'headerPost');
@@ -37,7 +38,7 @@ export function posts(navigateTo) {
   // Boton cerrar sesion
   const logOutIcon = document.createElement('button');
   logOutIcon.setAttribute('class', 'logOutButton');
-  //icono cerrar sesion
+  // icono cerrar sesion
   const iconLogOut = document.createElement('img');
   iconLogOut.setAttribute('src', '/img/salir.png');
   // Contenedor de Creacion de post
@@ -174,51 +175,22 @@ export function posts(navigateTo) {
   // evento cerrar sesion
   logOutIcon.addEventListener('click', () => {
     // eslint-disable-next-line
-    const alertlogOut = confirm('¿Está segur@ que desea salir de su cuenta?');
+
+
+  const alertlogOut = confirm('¿Está segur@ que desea salir de su cuenta?');
     if (alertlogOut === true) {
-      logOut();
+      // mainPage.removeAttribute('class', 'homepage')
+      logOut(navigateTo);
     } else {
       alert('Operación cancelada');
-    }
-  });
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // Usuario autenticado, puedes acceder a la colección de 'post'
-      console.log(
-        'User authenticated:',
-        auth.currentUser.uid,
-        'email:',
-        user.email
-      );
-      const userPostsCollection = collection(firestore, 'post');
-      onSnapshot(userPostsCollection, (snapshot) => {
-        const postSnap = [];
-        snapshot.forEach((doc) => {
-          postSnap.push(doc);
-        });
-        setupPost(postSnap);
-      });
-    } else {
-      console.log('Usuario no autenticado');
-      navigateTo('/login');
-      backgroundLayer.style.opacity = 0.0;
-      backgroundLayer.style.zIndex = '-1';
-      backgroundLayer.style.top = '0';
-      backgroundLayer.style.left = '0';
-      backgroundLayer.style.width = '0%';
-      backgroundLayer.style.height = '0%';
-      homepage.style.boxShadow =
-        '0 0 10px rgba(156, 158, 156, 0.346), 0 0 20px rgba(135, 136, 135, 0.5), 0 0 30px rgba(0, 255, 0, 0.203)';
-      homepage.style.height = '90%';
-      homepage.style.width = '90%';
-      homepage.style.paddingTop = '0em';
     }
   });
+  initializeAuth(setupPost);
+
   mainPage.append(headerPost, containerPubication, viewPost);
   headerPost.append(logoImage, logOutIcon);
   logOutIcon.append(iconLogOut);
-  body1.appendChild(backgroundLayer);
   containerPubication.append(imagePublication, containerPost);
   containerPost.append(postTitle, post, buttonSave);
   return mainPage;
