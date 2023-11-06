@@ -1,9 +1,6 @@
 import { login, GoogleRegister } from './firebase.js';
-// import { mainPage } from './main.js';
 
-
-function renderLogin(navigateTo) {
- 
+export function renderLogin(navigateTo) {
   const mainPage = document.createElement('div');
   mainPage.setAttribute('class', 'homepage1');
 
@@ -12,28 +9,24 @@ function renderLogin(navigateTo) {
   // Titulo 1
   const title1 = document.createElement('h1');
   title1.textContent = '¡Nos alegra verte de nuevo!';
-  title1.setAttribute('class','titleLogin')
+  title1.setAttribute('class', 'titleLogin');
   // Titulo 2
   const title2 = document.createElement('h2');
   title2.textContent = 'Ingresa tus datos';
-  title2.setAttribute('class','titleLogin')
-
+  title2.setAttribute('class', 'titleLogin');
   // Imagen
   const imageLogin = document.createElement('img');
   imageLogin.src = 'img/regadera.png';
   imageLogin.style.width = '50%';
   imageLogin.style.height = 'auto';
-  imageLogin.setAttribute('class','titleLogin')
-
+  imageLogin.setAttribute('class', 'titleLogin');
   // Contenedor de los inputs
   const containerLogin = document.createElement('div');
   containerLogin.setAttribute('class', 'Inputcontainer');
-
   // input correo
   const emailLabel = document.createElement('h3');
   emailLabel.textContent = 'Correo Electrónico:';
   emailLabel.setAttribute('class', 'h4Register');
-
   const email = document.createElement('input');
   email.setAttribute('type', 'email');
   email.setAttribute('class', 'input');
@@ -42,22 +35,18 @@ function renderLogin(navigateTo) {
   const passwordLabel = document.createElement('h3');
   passwordLabel.textContent = 'Contraseña:';
   passwordLabel.setAttribute('class', 'h4Register');
-
   const password = document.createElement('input');
   password.setAttribute('type', 'password');
   password.setAttribute('class', 'input');
   password.setAttribute('id', 'passwordLogin');
-
   // mensaje error contrasena
   const spanPassword = document.createElement('span');
   spanPassword.setAttribute('id', 'answerPass');
-
   // Boton iniciar session
   const sessionBtn = document.createElement('button');
   sessionBtn.textContent = 'Iniciar sesión';
   sessionBtn.setAttribute('class', 'buttonRegister');
   sessionBtn.setAttribute('id', 'sessionBtn');
-
   sessionBtn.addEventListener('click', () => {
     const loginEmail = document.querySelector('#emailLog');
     const loginPassword = document.querySelector('#passwordLogin');
@@ -68,25 +57,30 @@ function renderLogin(navigateTo) {
         navigateTo('/posts');
       })
       .catch((err) => {
-        spanPassword.classList.add('error');
-        spanPassword.textContent = `${err.message} ${err.email} Not saved`;
+      if (err.code === 'auth/invalid-email') {
+      spanPassword.classList.add('error');
+      spanPassword.textContent = `Ingresa un email válido`
+      }
+      if (err.code === 'auth/invalid-login-credentials') {
+      spanPassword.classList.add('error');
+      spanPassword.textContent = `Contraseña incorrecta`
+      }
+     
       });
   });
-
   // input start session with GOOGLE
   const or = document.createElement('h4');
   or.textContent = 'o';
   or.setAttribute('id', 'or');
-
- // Boton Google
- const buttonGoogle = document.createElement('button');
- buttonGoogle.setAttribute('id', 'google')
- buttonGoogle.setAttribute('class', 'buttonRegister');
- const googleImg = document.createElement('img');
- googleImg.setAttribute('src', 'img/googleongpng.webp');
- googleImg.setAttribute('class', 'imgGoogle')
- const textButton = document.createElement('h2')
- textButton.textContent = 'Iniciar sesión con Google';
+  // Boton Google
+  const buttonGoogle = document.createElement('button');
+  buttonGoogle.setAttribute('id', 'google');
+  buttonGoogle.setAttribute('class', 'buttonRegister');
+  const googleImg = document.createElement('img');
+  googleImg.setAttribute('src', 'img/googleongpng.webp');
+  googleImg.setAttribute('class', 'imgGoogle');
+  const textButton = document.createElement('h2');
+  textButton.textContent = 'Iniciar sesión con Google';
 
   buttonGoogle.addEventListener('click', () => {
     GoogleRegister();
@@ -119,5 +113,3 @@ function renderLogin(navigateTo) {
 
   return mainPage;
 }
-
-export default renderLogin;

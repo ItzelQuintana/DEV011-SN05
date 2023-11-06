@@ -1,10 +1,13 @@
-import { getFirestore, collection, addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import {
+  deleteDoc, query, where, getFirestore, collection, getDocs, addDoc, doc, getDoc, updateDoc,
+} from 'firebase/firestore';
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 // import renderCreateAccount from './register.js';
@@ -28,9 +31,7 @@ googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
 
-export {
-  app, firestore, googleProvider, auth,
-};
+export { app, firestore, googleProvider, auth };
 
 // Para crear o registrar usuarios
 export function createUser(email, password) {
@@ -42,7 +43,12 @@ export function createUser(email, password) {
         resolve({ message: 'success', email: user.email });
       })
       .catch((error) => {
-        console.error('Error al registrarse:', error.code, error.message, error.serverResponse);
+        console.error(
+          'Error al registrarse:',
+          error.code,
+          error.message,
+          error.serverResponse
+        );
         error.email = email;
         reject(error);
       });
@@ -59,7 +65,13 @@ export function login(email, password) {
         resolve({ message: 'success', email: user.email });
       })
       .catch((error) => {
-        console.error('Error al iniciar sesion:', error.code, error.message, error.serverResponse);
+        
+        console.error(
+          'Error al iniciar sesion:',
+          error.code,
+          error.message,
+          error.serverResponse
+        );
         error.email = email;
         reject(error);
       });
@@ -68,14 +80,19 @@ export function login(email, password) {
 
 // funcion save
 export function saveTask(title, description) {
-  addDoc(collection(firestore, 'post'), { title, description, likes: 0})
+  const postCollection = collection(firestore, 'post');
+
+  addDoc(postCollection, {
+    title,
+    description,
+    likes: 0,
+  })
     .then((docRef) => {
       console.log('Documento guardado con ID:', docRef.id);
     })
     .catch((error) => {
       console.error('Error al guardar el documento:', error);
     });
-  // console.log(title, description)
 }
 
 // funcion para registro con google
@@ -90,29 +107,120 @@ export function GoogleRegister() {
     });
 }
 
-//funcion para likes
-export function handleLike(firestore, postId, callback) {
-  const postRef = doc(firestore, 'post', postId);
+// funcion para likes
+export function handleLike(postId, userId, callback) {
+  const likesCollection = collection(firestore, 'likes');
+  // const likeButton = document.querySelector(`.likeButton[data-post-id="${postId}"]`);
+  const likeQuery = query(likesCollection, where('postId', '==', postId), where('userId', '==', userId));
 
-  // Obtener el documento y actualizar el campo de likes
-  getDoc(postRef)
-    .then((docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const currentLikes = docSnapshot.data().likes;
-        const updatedLikes = currentLikes + 1;
+  // Ejecuta la consulta para verificar si el usuario ya ha dado like
+  getDocs(likeQuery)
+    .then((querySnapshot) => {
+      // Verifica si no hay likes existentes del usuario para esta publicación
+      if (querySnapshot.empty) {
+        const postRef = doc(firestore, 'post', postId);
 
-        // Actualizar el campo de likes en Firestore
-        updateDoc(postRef, { likes: updatedLikes })
-          .then(() => {
-            console.log('Like registrado con éxito.');
-            callback(); // Llama a la función de devolución de llamada para actualizar las publicaciones
+        // Obtiene la información actual de la publicación
+        getDoc(postRef)
+          .then((docSnapshot) => {
+            if (docSnapshot.exists()) {
+              const currentLikes = docSnapshot.data().likes;
+              const updatedLikes = currentLikes + 1;
+
+              // Actualiza la cantidad de likes en la publicación
+              updateDoc(postRef, { likes: updatedLikes })
+                .then(() => {
+                  console.log('Like registrado con éxito.');
+
+                  // Agrega un nuevo documento de like
+                  addDoc(likesCollection, { postId, userId })
+                    .then(() => {
+                      console.log('Nuevo like registrado con éxito.');
+                      callback(); // Llama al callback después de manejar el like
+                    })
+                    .catch((error) => {
+                      console.error('Error al agregar nuevo like:', error);
+                    });
+                })
+                .catch((error) => {
+                  console.error('Error al actualizar likes:', error);
+                });
+            }
           })
           .catch((error) => {
-            console.error('Error al actualizar likes:', error);
+            console.error('Error al obtener documento de publicación:', error);
+          });
+      } else {
+        // El usuario ya ha dado like antes, manejar según sea necesario
+        const likeDoc = querySnapshot.docs[0]; // Obtén el documento de like existente
+        const likeId = likeDoc.id;
+
+        // Elimina el like existente
+        deleteDoc(doc(likesCollection, likeId))
+          .then(() => {
+            console.log('Like eliminado con éxito.');
+
+            // Obtiene la información actual de la publicación
+            const postRef = doc(firestore, 'post', postId);
+            getDoc(postRef)
+              .then((docSnapshot) => {
+                if (docSnapshot.exists()) {
+                  const currentLikes = docSnapshot.data().likes;
+                  const updatedLikes = currentLikes - 1;
+
+                  // Actualiza la cantidad de likes en la publicación
+                  updateDoc(postRef, { likes: updatedLikes })
+                    .then(() => {
+                      console.log('Like actualizado con éxito.');
+                      callback(); // Llama al callback después de manejar el unlike
+                    })
+                    .catch((error) => {
+                      console.error('Error al actualizar likes:', error);
+                    });
+                }
+              })
+              .catch((error) => {
+                console.error('Error al obtener documento de publicación:', error);
+              });
+          })
+          .catch((error) => {
+            console.error('Error al eliminar like:', error);
           });
       }
     })
     .catch((error) => {
-      console.error('Error al obtener documento:', error);
+      console.error('Error al realizar la consulta de likes:', error);
     });
+}
+
+// para eliminar post
+export function deletePost(postId) {
+  const postCollection = collection(firestore, 'post');
+  const postDocRef = doc(postCollection, postId);
+  deleteDoc(postDocRef)
+    .then(() => {
+      console.log('Post eliminado con éxito.');
+    })
+    .catch((error) => {
+      console.error('Error al borrar post:', error);
+    });
+}
+
+// para editar los post
+export function editPost(postId, updatedTitle, updatedDescription) {
+  const postRef = doc(firestore, 'post', postId);
+
+  return updateDoc(postRef, {
+    title: updatedTitle,
+    description: updatedDescription,
+  });
+}
+
+// funcion cerrar sesion
+export function logOut(){
+  signOut(auth).then(() => {
+    // Sign-out successful.
+  }).catch((error) => {
+    // An error happened.
+  });
 }

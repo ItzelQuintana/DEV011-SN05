@@ -1,4 +1,3 @@
-// estructura interna del contenedor
 function home(navigateTo) {
   const mainPage = document.createElement('div');
   mainPage.setAttribute('class', 'homepage1');
@@ -31,10 +30,7 @@ function home(navigateTo) {
   registerButton.id = 'registerButton';
   registerButton.textContent = 'Registrarse';
 
-  // evento para que se redirija a la vista de registro
   registerButton.addEventListener('click', () => {
-    // renderCreateAccount(mainPage);
-    // window.location = '/register';
     navigateTo('/register');
   });
 
@@ -47,7 +43,6 @@ function home(navigateTo) {
   loginButton.id = 'loginButton';
   loginButton.textContent = 'Iniciar Sesión';
   loginButton.addEventListener('click', () => {
-    // renderLogin(mainPage);
     navigateTo('/login');
   });
 

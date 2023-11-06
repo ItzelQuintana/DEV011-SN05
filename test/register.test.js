@@ -28,9 +28,9 @@ describe('renderCreateAccount', () => {
     haveAbuttonReturn.click();
     expect(navigateTo).toHaveBeenLastCalledWith('/');
   });
-  // it('Snapshot of register', () => {
-  //   const DOM = document.createElement('div');
-  //   DOM.append(renderCreateAccount());
-  //   expect(DOM).toMatchSnapshot();
-  // });
+  it('Snapshot of register', () => {
+    const DOM = document.createElement('div');
+    DOM.append(renderCreateAccount());
+    expect(DOM).toMatchSnapshot();
+  });
 });

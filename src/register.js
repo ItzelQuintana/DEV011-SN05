@@ -1,9 +1,7 @@
 import { createUser, GoogleRegister } from './firebase.js';
 
-
 // para crear la vista de registro
 function renderCreateAccount(navigateTo) {
-  console.log('register router');
   const mainPage = document.createElement('div');
   mainPage.setAttribute('class', 'homepage1');
 
@@ -60,14 +58,14 @@ function renderCreateAccount(navigateTo) {
   const or = document.createElement('h4');
   or.textContent = 'o';
   or.setAttribute('id', 'or');
- // Boton Google
+  // Boton Google
   const buttonGoogle = document.createElement('button');
-  buttonGoogle.setAttribute('id', 'google')
+  buttonGoogle.setAttribute('id', 'google');
   buttonGoogle.setAttribute('class', 'buttonRegister');
   const googleImg = document.createElement('img');
   googleImg.setAttribute('src', 'img/googleongpng.webp');
-  googleImg.setAttribute('class', 'imgGoogle')
-  const textButton = document.createElement('h2')
+  googleImg.setAttribute('class', 'imgGoogle');
+  const textButton = document.createElement('h2');
   textButton.textContent = 'Registrarse con Google';
 
   // Boton volver
@@ -77,6 +75,44 @@ function renderCreateAccount(navigateTo) {
   buttonBack.setAttribute('id', 'return');
   buttonBack.addEventListener('click', () => {
     navigateTo('/');
+  });
+
+  // continuar para registrar
+  buttonContinue.addEventListener('click', (e) => {
+    e.preventDefault();
+    const signUpEmail = document.querySelector('#emailRegister').value;
+    const signPassword = document.querySelector('#passwordRegister').value;
+    // console.log(signUpEmail, signPassword);
+    createUser(signUpEmail, signPassword)
+      .then((ok) => {
+        spanPassword.classList.add(ok.message);
+        spanPassword.textContent = `${ok.message} ${ok.email} Saved`;
+        navigateTo('/posts');
+      })
+      .catch((err) => {
+        if (err.code === 'auth/invalid-email') {
+          spanPassword.classList.add('error');
+          spanPassword.textContent = `Ingresa un email válido`
+        }
+        if (err.code === 'auth/missing-email') {
+          spanPassword.classList.add('error');
+          spanPassword.textContent = `Por favor ingresa un email`
+        }
+        if (err.code === 'auth/weak-password') {
+          spanPassword.classList.add('error');
+          spanPassword.textContent = `La contraseña debe tener al menos 6 caracteres`
+        }
+        if (err.code === 'auth/email-already-in-use') {
+          spanPassword.classList.add('error');
+          spanPassword.textContent = `El email ya se encuentra en uso`
+        }
+        
+      });
+  });
+
+  // Con Google
+  buttonGoogle.addEventListener('click', () => {
+    GoogleRegister();
   });
 
   mainPage.append(header, container);
@@ -95,29 +131,9 @@ function renderCreateAccount(navigateTo) {
     buttonGoogle,
     buttonBack,
   );
-
-  // continuar para registrar
-  buttonContinue.addEventListener('click', (e) => {
-    e.preventDefault();
-    const signUpEmail = document.querySelector('#emailRegister').value;
-    const signPassword = document.querySelector('#passwordRegister').value;
-    // console.log(signUpEmail, signPassword);
-    createUser(signUpEmail, signPassword)
-      .then((ok) => {
-        spanPassword.classList.add(ok.message);
-        spanPassword.textContent = `${ok.message} ${ok.email} Saved`;
-        navigateTo('/posts');
-      })
-      .catch((err) => {
-        spanPassword.classList.add('error');
-        spanPassword.textContent = `${err.message} ${err.email} Not saved`;
-      });
-  });
-
-  // Con Google
-  buttonGoogle.addEventListener('click', () => {
-    GoogleRegister();
-  });
   return mainPage;
 }
 export default renderCreateAccount;
+
+
+

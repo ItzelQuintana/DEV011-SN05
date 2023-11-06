@@ -24,6 +24,7 @@ body {
     justify-content: center;
     display: flex;
     margin: 0px;
+ 
 }
 .background-layer {
     position: fixed;
@@ -265,11 +266,27 @@ font-size: 250%;
 display: flex;
 color:white;
 -webkit-text-stroke: 2px black;
-gap: 20px;
+gap: 10px;
 }
 .logoImage{
-width: 60px;
+width: 40px;
 height: auto;
+}
+.logOutButton{
+width: 45px;
+height: auto;
+display: flex;
+background-color: transparent;
+border-color: transparent;
+border-radius: 16px;
+padding: 6px;
+}
+.logOutButton:hover{
+    background-color: white;
+}
+.logOutButton img{
+width: 100%;
+height: 100%;
 }
 .homepagePosts {
 display: flex;
@@ -297,7 +314,7 @@ border-color: #57403A;
 border-style: solid;
 background-color: #7e957d;
 border-radius: 1em;
-width: 35%;
+width: 70%;
 height: auto;
 padding: 20px;
 gap: 10px;
@@ -340,8 +357,8 @@ li p {
    gap: 5px;
 }
 .imagePublication{
-width: 90px;
-height: 90px;
+width: 70px;
+height: auto;
 align-self: flex-start;
 background-color: white;
 border-color: black;
@@ -356,7 +373,6 @@ height: 300px;
 display: flex;
 place-content: center;
 align-self: center;
-
 justify-content: center;
 flex-direction: column;
 padding: 10px;
@@ -399,9 +415,83 @@ gap: 5px
     background-color: #f5bdaf;
     color: #57403A;
 }
+.containerLikes{
+display: flex;
+place-content: left;
+align-items: center;
+gap:10px;
+font-weight: bolder;
+font-size: 20px;
+}
+.imgLike{
+width: 100%;
+height: auto;
+}
+
+.editTextarea, .editContentTextarea{
+    border-radius: 10px;
+    border-color: transparent;
+    padding: 10px;
+    height: auto;
+}
+.editTextarea{
+    font-family: 'Font2', sans-serif;
+    font-size: 160%;
+}
+
+.editContentTextarea{
+    font-family: 'Font1', sans-serif;
+    font-size: 190%;
+    font-weight: bolder;
+}
+.editPublic{
+padding-top: 0%;
+padding-bottom: 0%;
+margin-top: 0%;
+margin-bottom: 0%;
+font-size: 180%;
+background-color: #d7ffd5;
+width: 60%;
+align-self: center;
+place-content: center;
+border-radius: 10px;
+}
+.saveEditButton{
+font-size: 100%;
+border-radius: 10px;
+place-content: center;
+font-family: 'Font2', sans-serif;
+background:#4c594b;
+width: 30%;
+align-self: center;
+color: white;
+}
+.saveEditButton:hover {
+background-color: white;
+color: #4c594b;
+
+}
+.buttonOptions{
+display: flex;
+place-content: end;
+gap: 5px;
+}
+.deleteButton, .editButton{
+width: auto;
+border-radius: 10px;
+font-family: 'Font2', sans-serif;
+}
+.deleteButton:hover, .editButton:hover{
+background-color: #382925;
+color: #71bd6b;
+}
+
 /* Estilos para pantallas de escritorio */
 @media only screen and (min-width: 920px) {
    /*VISTA PRINCIPAL*/
+   body{
+    padding-bottom: 40px;
+}
    .homepage {
     flex-direction: row;
     padding-left: 0%;
@@ -414,15 +504,12 @@ gap: 5px
     }
     .homepage1{
         flex-direction: row;
-        padding-left: 0%;
-        padding-right: 0%;
         width: 100%;
         height: 100%;
         padding-top: 0%;
         padding-bottom: 0%;
         padding-right: 50px;
-        padding-left: 50px;
-        
+        padding-left: 50px;   
     }
 
 .homewelcome, .hometittle, .words{
@@ -560,7 +647,7 @@ margin-top: 0%;
     width: 35%;
     height: auto;
     padding: 20px;
-    gap: 10px;
+    gap: 8px;
     display: flex;
     flex-direction: column;
 
@@ -617,7 +704,6 @@ margin-top: 0%;
     }
     #postText{
         border-radius: 0.3em;
-
         height: 58%;
         font-size: 200%;
         padding: 10px;
@@ -627,12 +713,30 @@ margin-top: 0%;
         width: auto;
         align-self: last baseline;
         height: 20%;
-    
         font-size: 1.5em;
         padding-left: 40px;
-
         padding-right: 40px;
-     
     }
-
+    .logOutButton{
+        width: 60px;
+        margin-left: 85%;
+        z-index: 3;
+        position: absolute;
+    }
 }
+
+/* Estilo inicial del botón de "like" */
+.likeButton{
+    background-color: transparent;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+} 
+
+/* Estilo del botón de "like" cuando se le ha dado "like" (coloreado de rojo) */
+.likeButton.liked {
+    background-color: red;
+    color: white;
+    border: 1px solid red
+}
+  

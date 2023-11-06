@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`home Snapshot of home 1`] = `
+<div>
+  <div
+    class="homepage1"
+  >
+    <div
+      class="containerimg"
+    >
+      <img
+        alt="Imagen de plantas"
+        id="homeplant"
+        src="img/planta-arana.png"
+      />
+    </div>
+    <div
+      class="content"
+    >
+      <h3
+        class="homewelcome"
+      >
+        Bienvenidos a :
+      </h3>
+      <h1
+        class="hometittle"
+      >
+        Mi PlantApp
+      </h1>
+      <p
+        class="words"
+      >
+        Una gran comunidad de amantes de las plantas y botánica.
+      </p>
+      <div
+        class="orderbuttons"
+      >
+        <button
+          class="registrationButton"
+          id="registerButton"
+        >
+          Registrarse
+        </button>
+        <p
+          class="wordsHome"
+        >
+          ¿Ya tienes una cuenta?
+        </p>
+        <button
+          class="loginButton"
+          id="loginButton"
+        >
+          Iniciar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
