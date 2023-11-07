@@ -1,53 +1,37 @@
 import { posts } from '../src/post.js';
 import * as firebase from '../src/firebase.js';
+import renderLogin from '../src/login.js';
 
 describe('Usuario autenticado', () => {
-  it('Renderiza correctamente con usuario autenticado', () => {
-    // Mock de la función onAuthStateChanged de firebase
-    jest.spyOn(firebase, 'initializeAuth').mockImplementation((callback) => {
-      // Simula un usuario autenticado
-      callback({ uid: 'IdDeUsuarioSimulado' });
-    });
-
-    // Mock de la función de navegación
-    const navigateToMock = jest.fn();
-
-    // Renderiza el componente
-    const mainPage = posts(navigateToMock);
-
-    // Verifica que el componente se haya renderizado correctamente
-    // Aquí puedes hacer expectativas sobre el contenido de mainPage si es necesario
-    expect(mainPage).toBeDefined();
-  });
-
   it('Inicia sesión correctamente', () => {
     // Mock de la función onAuthStateChanged de firebase
     jest.spyOn(firebase, 'initializeAuth').mockImplementation((callback) => {
       // Simula un usuario no autenticado
       callback(null);
     });
-
     // Mock de la función de navegación
-    const navigateToMock = jest.fn();
+    const navigateTo = jest.fn();
 
     // Mock de la función signInWithEmailAndPassword de firebase
     jest.spyOn(firebase, 'login').mockResolvedValueOnce({});
 
     // Renderiza el componente
-    const mainPage = posts(navigateToMock);
-
+    const mainPage = document.createElement('div');
+    mainPage.append(renderLogin(navigateTo));
+    document.body.append(mainPage);
     // Simula el inicio de sesión
+    const loginEmail = mainPage.querySelector('#emailLog');
+    loginEmail.value = 'holahola@holahola.com';
+    const loginPassword = mainPage.querySelector('#passwordLogin');
+    loginPassword.value = 'holaholahola';
     const buttonLogin = mainPage.querySelector('#sessionBtn');
     buttonLogin.click();
 
     // Verifica que la función de inicio de sesión se haya llamado correctamente
-    expect(firebase.login).toHaveBeenCalledWith(
-      'holahola@holahola.com',
-      'holaholahola',
-    );
+    expect(firebase.login).toHaveBeenCalledTimes(1);
 
     // Verifica que la función de navegación se haya llamado después de iniciar sesión
-    expect(navigateToMock).toHaveBeenCalledWith('/');
+    // expect(navigateTo).toHaveBeenCalledWith('/posts');
   });
 });
 

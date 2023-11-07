@@ -13,7 +13,7 @@ exports[`renderCreateAccount Snapshot of register 1`] = `
       </h2>
       <img
         src="img/evolucion.png"
-        style="width: 60%; height: auto;"
+        style="width: 40%; height: auto;"
       />
     </header>
     <div

@@ -7,6 +7,9 @@ exports[`posts Snapshot of posts 1`] = `
     id="homepagePostes"
   >
     <div
+      class="background-layer"
+    />
+    <div
       class="headerPost"
     >
       Mi Plantapp
@@ -41,6 +44,11 @@ exports[`posts Snapshot of posts 1`] = `
           id="postText"
           placeholder="Ingresa el contenido de la publicación."
         />
+        <input
+          accept="image/*"
+          id="post-image"
+          type="file"
+        />
         <button
           class="buttonSave"
         >
@@ -50,7 +58,11 @@ exports[`posts Snapshot of posts 1`] = `
     </div>
     <div
       class="postView"
-    />
+    >
+      <p>
+         Aun no hay publicaciones 
+      </p>
+    </div>
   </div>
 </div>
 `;

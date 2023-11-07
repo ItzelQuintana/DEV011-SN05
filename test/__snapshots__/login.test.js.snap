@@ -21,7 +21,7 @@ exports[`renderLogin Snapshot of login 1`] = `
       <img
         class="titleLogin"
         src="img/regadera.png"
-        style="width: 50%; height: auto;"
+        style="width: 40%; height: auto;"
       />
     </header>
     <div

@@ -17,7 +17,7 @@ function renderLogin(navigateTo) {
   // Imagen
   const imageLogin = document.createElement('img');
   imageLogin.src = 'img/regadera.png';
-  imageLogin.style.width = '50%';
+  imageLogin.style.width = '40%';
   imageLogin.style.height = 'auto';
   imageLogin.setAttribute('class', 'titleLogin');
   // Contenedor de los inputs
@@ -57,15 +57,14 @@ function renderLogin(navigateTo) {
         navigateTo('/posts');
       })
       .catch((err) => {
-      if (err.code === 'auth/invalid-email') {
-      spanPassword.classList.add('error');
-      spanPassword.textContent = `Ingresa un email válido`
-      }
-      if (err.code === 'auth/invalid-login-credentials') {
-      spanPassword.classList.add('error');
-      spanPassword.textContent = `Contraseña incorrecta`
-      }
-     
+        if (err.code === 'auth/invalid-email') {
+          spanPassword.classList.add('error');
+          spanPassword.textContent = 'Ingresa un email válido';
+        }
+        if (err.code === 'auth/invalid-login-credentials') {
+          spanPassword.classList.add('error');
+          spanPassword.textContent = 'Contraseña incorrecta';
+        }
       });
   });
   // input start session with GOOGLE
