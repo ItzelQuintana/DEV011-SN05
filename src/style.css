@@ -352,7 +352,7 @@ padding-left: 3%;
 
 li p {
     font-weight: bolder;
-    height: 150px;
+    height: auto;
     font-size: 150%;
     margin: 0%;
     padding: 12px;
@@ -381,6 +381,11 @@ border-color: black;
 border-style: solid;
 border-radius: 1em;
 padding: 0.5em;
+}
+.imgPostPublication {
+width: 50%;
+height: auto;
+align-self: center;
 }
 #task-form{
 background-color: #a38a83;
@@ -681,7 +686,7 @@ padding: 10px;
     }
     
     li p {
-        height: 150px;
+        height: auto;
         font-size: 170%;
         margin: 0%;
         padding: 12px;

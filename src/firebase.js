@@ -3,7 +3,8 @@ import {
   query,
   where,
   getFirestore,
-  collection, getDocs,
+  collection,
+  getDocs,
   addDoc,
   doc,
   getDoc,
@@ -48,12 +49,9 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
-const storage = getStorage();
+const storage = getStorage(app);
 export {
-  app,
-  firestore,
-  googleProvider,
-  auth,
+  app, firestore, googleProvider, auth,
 };
 
 // Para crear o registrar usuarios
@@ -100,12 +98,21 @@ export function login(email, password) {
   });
 }
 
-// funcion save
+// function save
 // export function saveTask(title, description, imageInput) {
+
+//   const imageName = `${Date.now()}_${imageInput.name}`;
+//   const storageRef = ref(storage, `/img/${imageName}`);
+//   uploadBytes(storageRef, imageInput).then((snapshot) => {
+//     console.log('Uploaded a blob or file!');
+//   });
+//   console.log(storageRef);
+//   let image = {};
 //   const postCollection = collection(firestore, 'post');
 //   addDoc(postCollection, {
 //     title,
 //     description,
+//     image,
 //     likes: 0,
 //   })
 //     .then((docRef) => {
@@ -115,49 +122,42 @@ export function login(email, password) {
 //       console.error('Error al guardar el documento:', error);
 //     });
 // }
-async function uploadImageToStorage(imageFile) {
-  try {
-    // Genera un nombre único para la imagen, por ejemplo, utilizando un timestamp
-    const imageName = `${Date.now()}_${imageFile.name}`;
-
-    // Establece la referencia al lugar en el que deseas almacenar la imagen
-    const storageRef = ref(storage, `img/${imageName}`);
-
-    // Sube la imagen al almacenamiento
-    await uploadBytes(storageRef, imageFile);
-
-    // Obtiene la URL de descarga de la imagen después de cargarla con éxito
-    const imageUrl = await getDownloadURL(storageRef);
-
-    // Devuelve la URL de la imagen
-    console.log('URL de la imagen:', imageUrl);
-    return imageUrl;
-  } catch (error) {
-    console.error('Error al cargar la imagen al almacenamiento:', error);
-    throw error; // Puedes manejar el error según tus necesidades
-  }
-}
+// No necesitas el async/await aquí
 export async function saveTask(title, description, imageFile) {
-  try {
+  console.log(imageFile);
+  if (!imageFile) {
     const postCollection = collection(firestore, 'post');
-
-    // Verifica si se proporcionó un archivo de imagen
-    let imageUrl = null;
-    if (imageFile) {
-      // Aquí debes implementar la lógica para cargar la imagen y obtener la URL
-      imageUrl = await uploadImageToStorage(imageFile);
-    }
     // Guarda la información del post en la base de datos
-    const docRef = await addDoc(postCollection, {
-      title,
-      description,
-      imageUrl, // Guarda la URL de la imagen en lugar del objeto de archivo
-      likes: 0,
-    });
-
-    console.log('Documento guardado con ID:', docRef.id);
-  } catch (error) {
-    console.error('Error al guardar el documento:', error);
+    try {
+      await addDoc(postCollection, {
+        title,
+        description,
+        likes: 0,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  } else {
+    try {
+      const imageName = `${Date.now()}_${imageFile.name}`;
+      const storageRef = ref(storage, `/img/${imageName}`);
+      // Sube la imagen al almacenamiento y obtiene la URL de descarga
+      const imageUrl = await uploadBytes(storageRef, imageFile)
+        .then(() => getDownloadURL(storageRef));
+      console.log('URL de la imagen:', imageUrl);
+      const postCollection = collection(firestore, 'post');
+      // Guarda la información del post en la base de datos
+      const docRef = await addDoc(postCollection, {
+        title,
+        description,
+        imageUrl,
+        likes: 0,
+      });
+      console.log('Documento guardado con ID:', docRef.id);
+    } catch (error) {
+      console.error('Error al guardar el documento:', error);
+      throw error; // Puedes manejar el error según tus necesidades
+    }
   }
 }
 
@@ -177,8 +177,14 @@ export function GoogleRegister(navigateTo) {
 // funcion para likes
 export function handleLike(postId, userId, callback) {
   const likesCollection = collection(firestore, 'likes');
-  const likeButton = document.querySelector(`.likeButton[data-post-id="${postId}"]`);
-  const likeQuery = query(likesCollection, where('postId', '==', postId), where('userId', '==', userId));
+  const likeButton = document.querySelector(
+    `.likeButton[data-post-id="${postId}"]`,
+  );
+  const likeQuery = query(
+    likesCollection,
+    where('postId', '==', postId),
+    where('userId', '==', userId),
+  );
 
   // Ejecuta la consulta para verificar si el usuario ya ha dado like
   getDocs(likeQuery)
@@ -247,7 +253,10 @@ export function handleLike(postId, userId, callback) {
                 }
               })
               .catch((error) => {
-                console.error('Error al obtener documento de publicación:', error);
+                console.error(
+                  'Error al obtener documento de publicación:',
+                  error,
+                );
               });
           })
           .catch((error) => {
@@ -287,12 +296,13 @@ export function editPost(postId, updatedTitle, updatedDescription) {
 export function logOut(navigateTo) {
   signOut(auth)
     .then(() => {
-    // Sign-out successful.
+      // Sign-out successful.
       console.error('sesion cerrada');
       navigateTo('/login');
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error('Error al cerrar sesion:', error.code, error.message);
-    // An error happened.
+      // An error happened.
     });
 }
 

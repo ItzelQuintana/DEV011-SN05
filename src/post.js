@@ -72,7 +72,7 @@ export function posts(navigateTo) {
   // contenedor post
   const viewPost = document.createElement('div');
   viewPost.setAttribute('class', 'postView');
-  containerPost.addEventListener('submit', (e) => {
+  buttonSave.addEventListener('click', (e) => {
     e.preventDefault();
     const title = postTitle.value;
     const description = post.value;
@@ -82,7 +82,6 @@ export function posts(navigateTo) {
       alert('Campos vacios');
     } else {
       saveTask(title, description, imageFile);
-      // console.log(auth.currentUser.uid);
       containerPost.reset();
     }
   });
@@ -93,30 +92,50 @@ export function posts(navigateTo) {
       let html = '';
       data.forEach((doc) => {
         const postdata = doc.data();
-        if (postdata.title && postdata.description) {
+        if (!postdata.imageUrl) {
           html += `
-    <li class="ListGroupItem">
-    <div class='buttonOptions'>
-    <button class='deleteButton' data-post-id="${doc.id}"> Delete </button>
-    <button class='editButton' data-post-id="${doc.id}"> Editar </button>
-    </div>
-    <h5>${postdata.title}</h5>
-    <p>${postdata.description}</p>
-    <div class="containerLikes" data-post-id="${doc.id}">
-    <button class="likeButton" data-post-id="${doc.id}">
-    <img src="img/like.png" class='imgLike'>
-    </button>
-    <span>${postdata.likes} Likes</span>
-    </div>
-    <h4 class='editPublic' data-post-id="${doc.id}" style="display: none;"> Editar publicación: </h4>
-    <textarea class="editTextarea" data-post-id="${doc.id}" style="display: none;">${postdata.title}</textarea>
-    <textarea class="editContentTextarea" data-post-id="${doc.id}" style="display: none;">${postdata.description}</textarea>
-    <button class="saveEditButton" data-post-id="${doc.id}" style="display: none;">Guardar</button>
-    </li>
-    `;
+          <li class="ListGroupItem">
+          <div class='buttonOptions'>
+          <button class='deleteButton' data-post-id="${doc.id}"> Delete </button>
+          <button class='editButton' data-post-id="${doc.id}"> Editar </button>
+          </div>
+          <h5>${postdata.title}</h5>
+          <p>${postdata.description}</p>
+          <div class="containerLikes" data-post-id="${doc.id}">
+          <button class="likeButton" data-post-id="${doc.id}">
+          <img src="img/like.png" class='imgLike'>
+          </button>
+          <span>${postdata.likes} Likes</span>
+          </div>
+          <h4 class='editPublic' data-post-id="${doc.id}" style="display: none;"> Editar publicación: </h4>
+          <textarea class="editTextarea" data-post-id="${doc.id}" style="display: none;">${postdata.title}</textarea>
+          <textarea class="editContentTextarea" data-post-id="${doc.id}" style="display: none;">${postdata.description}</textarea>
+          <button class="saveEditButton" data-post-id="${doc.id}" style="display: none;">Guardar</button>
+          </li>
+          `;
+        } else {
+          html += `
+          <li class="ListGroupItem">
+          <div class='buttonOptions'>
+          <button class='deleteButton' data-post-id="${doc.id}"> Delete </button>
+          <button class='editButton' data-post-id="${doc.id}"> Editar </button>
+          </div>
+          <h5>${postdata.title}</h5>
+          <p>${postdata.description}</p>
+          <img src="${postdata.imageUrl}" alt="Imagen del post" data-post-id="${doc.id}" class="imgPostPublication">
+          <div class="containerLikes" data-post-id="${doc.id}">
+          <button class="likeButton" data-post-id="${doc.id}">
+          <img src="img/like.png" class='imgLike'>
+          </button>
+          <span>${postdata.likes} Likes</span>
+          </div>
+          <h4 class='editPublic' data-post-id="${doc.id}" style="display: none;"> Editar publicación: </h4>
+          <textarea class="editTextarea" data-post-id="${doc.id}" style="display: none;">${postdata.title}</textarea>
+          <textarea class="editContentTextarea" data-post-id="${doc.id}" style="display: none;">${postdata.description}</textarea>
+          <button class="saveEditButton" data-post-id="${doc.id}" style="display: none;">Guardar</button>
+          </li>
+          `;
         }
-        // else if (postdata.title && postdata.description && postdata.imageUrl) {
-        // }
       });
       viewPost.innerHTML = html;
       // Evento Like
