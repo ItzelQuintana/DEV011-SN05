@@ -163,63 +163,63 @@ export function posts(navigateTo) {
       // Evento Delete
       const deleteButton = document.querySelectorAll('.deleteButton');
       deleteButton.forEach((button) => {
-       if(posts().userId===auth.currentUser.email){ 
         button.addEventListener('click', (e) => {
-          // eslint-disable-next-line
-           const alertDelete = confirm('¿Está segur@ que desea eliminar este post?');
-          const postId = e.currentTarget.getAttribute('data-post-id');
-          if (alertDelete === true) {
-            deletePost(postId);
-            alert('Post eliminado con éxito');
+          if (posts().userId === auth.currentUser.email) {
+            // eslint-disable-next-line
+            const alertDelete = confirm(
+              '¿Está segur@ que desea eliminar este post?'
+            );
+            const postId = e.currentTarget.getAttribute('data-post-id');
+            if (alertDelete === true) {
+              deletePost(postId);
+              alert('Post eliminado con éxito');
+            } else {
+              alert('Operación cancelada');
+            }
           } else {
-            alert('Operación cancelada');
+            alert('No puedes eliminar posts de otros usuarios');
           }
         });
-      }
-      else{
-        alert('No puedes eliminar post de otros usuarios')
-      }
       });
       // Evento Editar
       const editButtons = document.querySelectorAll('.editButton');
       editButtons.forEach((button) => {
         button.addEventListener('click', (e) => {
-         if( posts().userId===auth.currentUser.email){ 
-          const postId = e.currentTarget.getAttribute('data-post-id');
-          const textareaTitle = document.querySelector(
-            `.editTextarea[data-post-id="${postId}"]`,
-          );
-          const textareaDescription = document.querySelector(
-            `.editContentTextarea[data-post-id="${postId}"]`,
-          );
-          const saveEditButton = document.querySelector(
-            `.saveEditButton[data-post-id="${postId}"]`,
-          );
-          const likeButton = document.querySelector(
-            `.containerLikes[data-post-id="${postId}"]`,
-          );
-          const descriptionEdit = document.querySelector(
-            `.editPublic[data-post-id="${postId}"]`,
-          );
-          textareaTitle.style.display = 'flex';
-          textareaDescription.style.display = 'flex';
-          saveEditButton.style.display = 'flex';
-          descriptionEdit.style.display = 'flex';
-          likeButton.style.display = 'none';
+          if (posts().userId === auth.currentUser.email) {
+            const postId = e.currentTarget.getAttribute('data-post-id');
+            const textareaTitle = document.querySelector(
+              `.editTextarea[data-post-id="${postId}"]`
+            );
+            const textareaDescription = document.querySelector(
+              `.editContentTextarea[data-post-id="${postId}"]`
+            );
+            const saveEditButton = document.querySelector(
+              `.saveEditButton[data-post-id="${postId}"]`
+            );
+            const likeButton = document.querySelector(
+              `.containerLikes[data-post-id="${postId}"]`
+            );
+            const descriptionEdit = document.querySelector(
+              `.editPublic[data-post-id="${postId}"]`
+            );
+            textareaTitle.style.display = 'flex';
+            textareaDescription.style.display = 'flex';
+            saveEditButton.style.display = 'flex';
+            descriptionEdit.style.display = 'flex';
+            likeButton.style.display = 'none';
 
-          saveEditButton.addEventListener('click', () => {
-            editPost(postId, textareaTitle.value, textareaDescription.value)
-              .then(() => {
-                alert('Publicación editada con éxito');
-              })
-              .catch((error) => {
-                console.error('Error al editar el post:', error);
-              });
-          });
-        }
-        else{
-          alert('No puedes editar post de otros usuarios')
-        }
+            saveEditButton.addEventListener('click', () => {
+              editPost(postId, textareaTitle.value, textareaDescription.value)
+                .then(() => {
+                  alert('Publicación editada con éxito');
+                })
+                .catch((error) => {
+                  console.error('Error al editar el post:', error);
+                });
+            });
+          } else {
+            alert('No puedes editar post de otros usuarios');
+          }
         });
       });
     } else {
